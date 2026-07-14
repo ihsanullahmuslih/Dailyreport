@@ -1,1079 +1,1479 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>کمال افغان · ورځنی راپور</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      background: #eef2f7;
-      font-family: 'Segoe UI', Tahoma, system-ui, sans-serif;
-      direction: rtl;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-    }
-    .container {
-      max-width: 1200px;
-      width: 100%;
-      background: white;
-      border-radius: 28px;
-      box-shadow: 0 20px 40px -12px rgba(0, 20, 30, 0.25);
-      padding: 2rem;
-    }
-    .header {
-      background: #0b2b3f;
-      color: white;
-      padding: 1.2rem 2rem;
-      border-radius: 24px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.8rem;
-    }
-    .header h1 {
-      font-size: 1.4rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .header h1 i {
-      color: #f7c948;
-    }
-    .header-badges {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      font-size: 0.9rem;
-    }
-    .header-badges span {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 0.3rem 1.2rem;
-      border-radius: 40px;
-    }
-    .info-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1rem;
-      background: #f8fafd;
-      padding: 1.5rem;
-      border-radius: 20px;
-      border: 1px solid #dfe6ef;
-      margin-bottom: 1.8rem;
-    }
-    .info-grid label {
-      font-weight: 600;
-      font-size: 0.75rem;
-      color: #1f3a4b;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .info-grid input {
-      padding: 0.5rem 1rem;
-      border: 1px solid #d4dee9;
-      border-radius: 40px;
-      font-size: 0.9rem;
-      background: white;
-      width: 100%;
-    }
-    .info-grid input:focus {
-      border-color: #1f6e8c;
-      outline: none;
-    }
-    .table-wrapper {
-      overflow-x: auto;
-      border: 1px solid #e2e9f2;
-      border-radius: 20px;
-      margin-bottom: 1.5rem;
-      background: white;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
-      min-width: 650px;
-    }
-    th {
-      background: #eef3f9;
-      color: #14303e;
-      font-weight: 600;
-      padding: 0.7rem 0.5rem;
-      border-bottom: 2px solid #cbd8e6;
-    }
-    td {
-      padding: 0.3rem 0.3rem;
-      border-bottom: 1px solid #e3eaf2;
-    }
-    td input,
-    td select {
-      width: 100%;
-      padding: 0.3rem 0.6rem;
-      border: 1px solid #dce3ed;
-      border-radius: 40px;
-      font-size: 0.8rem;
-      background: white;
-    }
-    .btn-add-row {
-      background: #e9f2f9;
-      border: none;
-      padding: 0.4rem 1.5rem;
-      border-radius: 60px;
-      font-weight: 600;
-      color: #0b2b3f;
-      cursor: pointer;
-      margin: 0.6rem 1rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: 0.2s;
-    }
-    .btn-add-row:hover {
-      background: #d4e0ec;
-    }
-    .btn-remove-row {
-      background: none;
-      border: none;
-      color: #b91c1c;
-      font-size: 1.1rem;
-      cursor: pointer;
-      padding: 0 6px;
-    }
-    .btn-remove-row:hover {
-      color: #7f1d1d;
-    }
-    .sub-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin: 1.5rem 0;
-    }
-    .sub-card {
-      background: #f8fafd;
-      border-radius: 20px;
-      padding: 1.2rem;
-      border: 1px solid #e2e9f2;
-    }
-    .sub-card .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px dashed #d4e0ec;
-      padding-bottom: 0.5rem;
-      margin-bottom: 0.8rem;
-    }
-    .sub-card .card-header h3 {
-      font-size: 1rem;
-      color: #0f3346;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 0;
-    }
-    .sub-card .card-header .btn-sm {
-      background: #0b2b3f;
-      color: white;
-      border: none;
-      padding: 0.25rem 0.8rem;
-      border-radius: 40px;
-      font-size: 0.75rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      transition: 0.2s;
-    }
-    .sub-card .card-header .btn-sm:hover {
-      background: #1c4b63;
-    }
-    .machine-row,
-    .prod-row {
-      display: grid;
-      gap: 5px;
-      align-items: center;
-      margin-bottom: 5px;
-    }
-    .machine-row {
-      grid-template-columns: 2fr 1fr 1.5fr 1.2fr 1.2fr 0.3fr;
-    }
-    .prod-row {
-      grid-template-columns: 1.5fr 0.8fr 0.8fr 1.2fr 0.3fr;
-    }
-    .machine-row input,
-    .machine-row select,
-    .prod-row input {
-      padding: 0.25rem 0.5rem;
-      border: 1px solid #d4dee9;
-      border-radius: 40px;
-      font-size: 0.75rem;
-      background: white;
-      width: 100%;
-    }
-    .machine-row .btn-remove-row,
-    .prod-row .btn-remove-row {
-      background: none;
-      border: none;
-      color: #b91c1c;
-      font-size: 0.9rem;
-      cursor: pointer;
-      padding: 0;
-      width: 24px;
-      text-align: center;
-    }
-    .machine-row .btn-remove-row:hover,
-    .prod-row .btn-remove-row:hover {
-      color: #7f1d1d;
-    }
-    .textarea-group textarea {
-      width: 100%;
-      padding: 0.7rem 1.2rem;
-      border-radius: 20px;
-      border: 1px solid #d4dee9;
-      font-family: inherit;
-      resize: vertical;
-      font-size: 0.9rem;
-      margin-bottom: 0.8rem;
-    }
-    .summary-panel {
-      background: #f0f6fe;
-      border-radius: 20px;
-      padding: 1rem 1.5rem;
-      margin: 1.2rem 0;
-      border: 1px solid #cfe0f0;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.8rem;
-    }
-    .summary-panel .stat {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 500;
-      color: #0b2b3f;
-      font-size: 0.9rem;
-    }
-    .summary-panel .stat i {
-      color: #1f6e8c;
-    }
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 1.5rem;
-      gap: 1rem;
-    }
-    .btn {
-      padding: 0.7rem 2rem;
-      border: none;
-      border-radius: 60px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      transition: 0.2s;
-    }
-    .btn-primary {
-      background: #0b2b3f;
-      color: white;
-    }
-    .btn-primary:hover {
-      background: #1c4b63;
-      transform: scale(1.02);
-    }
-    .btn-whatsapp {
-      background: #25D366;
-      color: white;
-    }
-    .btn-whatsapp:hover {
-      background: #1da851;
-      transform: scale(1.02);
-    }
-    .btn-download {
-      background: #1f6e8c;
-      color: white;
-    }
-    .btn-download:hover {
-      background: #2a7fa0;
-      transform: scale(1.02);
-    }
-    .btn-outline {
-      background: white;
-      color: #0b2b3f;
-      border: 2px solid #d4dee9;
-    }
-    .btn-outline:hover {
-      background: #f0f4f8;
-    }
-    .signature {
-      background: #e9f0f7;
-      padding: 0.4rem 1.8rem;
-      border-radius: 60px;
-      font-weight: 500;
-      color: #1f3a4b;
-      font-size: 0.9rem;
-    }
-    .status {
-      padding: 0.7rem 1.2rem;
-      border-radius: 16px;
-      margin: 0.8rem 0;
-      display: none;
-      font-weight: 500;
-    }
-    .status.success {
-      display: block;
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-    .status.error {
-      display: block;
-      background: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-    .status.info {
-      display: block;
-      background: #d1ecf1;
-      color: #0c5460;
-      border: 1px solid #bee5eb;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>کمال افغان · روزمره راپور</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #eef2f7;
+            font-family: 'Segoe UI', Tahoma, system-ui, sans-serif;
+            direction: rtl;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 1300px;
+            width: 100%;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px -12px rgba(0, 20, 30, 0.25);
+            padding: 2rem;
+        }
+        .header {
+            background: #0b2b3f;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 215, 0, 0.1);
+            padding: 3px 10px 3px 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        .logo-container .logo-icon {
+            font-size: 18px;
+            color: #f7c948;
+        }
+        .logo-container .logo-text {
+            font-size: 8px;
+            font-weight: 600;
+            color: #f7c948;
+            line-height: 1.2;
+        }
+        .logo-container .logo-sub {
+            font-size: 6px;
+            color: #aac7d9;
+            letter-spacing: 0.3px;
+        }
+        .header h1 {
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .header h1 i {
+            color: #f7c948;
+        }
+        .header-badges {
+            display: flex;
+            gap: 0.7rem;
+            flex-wrap: wrap;
+            font-size: 0.75rem;
+        }
+        .header-badges span {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+        }
+        .header-badges .auto-save-indicator {
+            background: #1a7a3a;
+            color: white;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.8rem;
+            background: #f8fafd;
+            padding: 1rem 1.2rem;
+            border-radius: 16px;
+            border: 1px solid #dfe6ef;
+            margin-bottom: 1.5rem;
+        }
+        .info-grid label {
+            font-weight: 600;
+            font-size: 0.7rem;
+            color: #1f3a4b;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .info-grid input,
+        .info-grid select {
+            padding: 0.4rem 0.8rem;
+            border: 1px solid #d4dee9;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            background: white;
+            width: 100%;
+        }
+        .info-grid input:focus,
+        .info-grid select:focus {
+            border-color: #1f6e8c;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(31, 110, 140, 0.1);
+        }
+        .section-title {
+            background: #eef3f9;
+            padding: 0.4rem 1.2rem;
+            border-radius: 10px;
+            font-weight: 700;
+            color: #0b2b3f;
+            margin: 0.8rem 0 0.6rem 0;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-right: 3px solid #1f6e8c;
+        }
+        .section-title i {
+            color: #1f6e8c;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            border: 1px solid #e2e9f2;
+            border-radius: 16px;
+            margin-bottom: 0.8rem;
+            background: white;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            min-width: 600px;
+        }
+        th {
+            background: #eef3f9;
+            color: #14303e;
+            font-weight: 600;
+            padding: 0.5rem 0.4rem;
+            border-bottom: 2px solid #cbd8e6;
+            white-space: nowrap;
+            font-size: 0.75rem;
+        }
+        td {
+            padding: 0.2rem 0.2rem;
+            border-bottom: 1px solid #e3eaf2;
+        }
+        td input,
+        td select {
+            width: 100%;
+            padding: 0.2rem 0.4rem;
+            border: 1px solid #dce3ed;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            background: white;
+        }
+        td input:focus,
+        td select:focus {
+            border-color: #1f6e8c;
+            outline: none;
+        }
+        td .checkbox-cell {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        td .checkbox-cell input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #1f6e8c;
+            cursor: pointer;
+        }
+        .btn-add-row {
+            background: #e9f2f9;
+            border: none;
+            padding: 0.3rem 1.2rem;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: #0b2b3f;
+            cursor: pointer;
+            margin: 0.4rem 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
+        }
+        .btn-add-row:hover {
+            background: #d4e0ec;
+        }
+        .btn-remove-row {
+            background: none;
+            border: none;
+            color: #b91c1c;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0 4px;
+        }
+        .btn-remove-row:hover {
+            color: #7f1d1d;
+        }
+        .sub-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 0.8rem 0;
+        }
+        .sub-card {
+            background: #f8fafd;
+            border-radius: 16px;
+            padding: 1rem;
+            border: 1px solid #e2e9f2;
+        }
+        .sub-card .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px dashed #d4e0ec;
+            padding-bottom: 0.4rem;
+            margin-bottom: 0.6rem;
+        }
+        .sub-card .card-header h3 {
+            font-size: 0.85rem;
+            color: #0f3346;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0;
+        }
+        .sub-card .card-header .btn-sm {
+            background: #0b2b3f;
+            color: white;
+            border: none;
+            padding: 0.2rem 0.6rem;
+            border-radius: 40px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: 0.2s;
+        }
+        .sub-card .card-header .btn-sm:hover {
+            background: #1c4b63;
+        }
+        .machine-row,
+        .prod-row {
+            display: grid;
+            gap: 4px;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .machine-row {
+            grid-template-columns: 2fr 1fr 1.5fr 1.2fr 1.2fr 0.3fr;
+        }
+        .prod-row {
+            grid-template-columns: 1.5fr 0.8fr 0.8fr 1.2fr 0.3fr;
+        }
+        .machine-row input,
+        .machine-row select,
+        .prod-row input {
+            padding: 0.2rem 0.4rem;
+            border: 1px solid #d4dee9;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            background: white;
+            width: 100%;
+        }
+        .machine-row .btn-remove-row,
+        .prod-row .btn-remove-row {
+            background: none;
+            border: none;
+            color: #b91c1c;
+            font-size: 0.8rem;
+            cursor: pointer;
+            padding: 0;
+            width: 20px;
+            text-align: center;
+        }
+        .textarea-group textarea {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            border-radius: 16px;
+            border: 1px solid #d4dee9;
+            font-family: inherit;
+            resize: vertical;
+            font-size: 0.85rem;
+            margin-bottom: 0.6rem;
+            background: white;
+        }
+        .textarea-group textarea:focus {
+            border-color: #1f6e8c;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(31, 110, 140, 0.08);
+        }
+        .summary-panel {
+            background: #f0f6fe;
+            border-radius: 16px;
+            padding: 0.7rem 1.2rem;
+            margin: 0.8rem 0;
+            border: 1px solid #cfe0f0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .summary-panel .stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+            color: #0b2b3f;
+            font-size: 0.8rem;
+        }
+        .summary-panel .stat i {
+            color: #1f6e8c;
+        }
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.2rem;
+            gap: 0.8rem;
+        }
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+        .btn-primary {
+            background: #0b2b3f;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #1c4b63;
+            transform: scale(1.02);
+        }
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+        .btn-whatsapp:hover {
+            background: #1da851;
+            transform: scale(1.02);
+        }
+        .btn-excel {
+            background: #217346;
+            color: white;
+        }
+        .btn-excel:hover {
+            background: #1a5e3a;
+            transform: scale(1.02);
+        }
+        .btn-outline {
+            background: white;
+            color: #0b2b3f;
+            border: 2px solid #d4dee9;
+        }
+        .btn-outline:hover {
+            background: #f0f4f8;
+        }
+        .btn-success {
+            background: #1a7a3a;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #14632e;
+        }
+        .btn-danger {
+            background: #b91c1c;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #991515;
+        }
+        .signature {
+            background: #e9f0f7;
+            padding: 0.3rem 1.2rem;
+            border-radius: 60px;
+            font-weight: 500;
+            color: #1f3a4b;
+            font-size: 0.8rem;
+        }
+        .status {
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            margin: 0.5rem 0;
+            display: none;
+            font-weight: 500;
+        }
+        .status.success {
+            display: block;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            display: block;
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            display: block;
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
 
-    /* PDF Styles */
-    #pdfContent {
-      background: white;
-      padding: 30px;
-      font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
-      direction: rtl;
-      color: #1a1a1a;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    #pdfContent .pdf-header {
-      background: #0b2b3f;
-      color: white;
-      padding: 18px;
-      border-radius: 12px;
-      text-align: center;
-      margin-bottom: 18px;
-    }
-    #pdfContent .pdf-header h2 {
-      font-size: 20px;
-      margin: 0;
-    }
-    #pdfContent .pdf-header p {
-      margin: 5px 0 0;
-      opacity: 0.9;
-      font-size: 14px;
-    }
-    #pdfContent .pdf-section {
-      margin-bottom: 12px;
-      border-bottom: 1px solid #e0e0e0;
-      padding-bottom: 10px;
-    }
-    #pdfContent .pdf-section h4 {
-      color: #0b2b3f;
-      margin: 0 0 6px 0;
-      font-size: 15px;
-    }
-    #pdfContent .pdf-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 2px 0;
-      font-size: 12px;
-      border-bottom: 1px dashed #f0f0f0;
-    }
-    #pdfContent .pdf-row .label {
-      font-weight: 600;
-    }
-    #pdfContent .pdf-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 11px;
-      margin: 5px 0;
-    }
-    #pdfContent .pdf-table th {
-      background: #eef3f9;
-      padding: 5px 6px;
-      border: 1px solid #ccc;
-      text-align: center;
-    }
-    #pdfContent .pdf-table td {
-      padding: 4px 6px;
-      border: 1px solid #ddd;
-      text-align: center;
-    }
-    #pdfContent .pdf-summary {
-      background: #f0f6fe;
-      padding: 10px;
-      border-radius: 8px;
-      margin-top: 8px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      font-size: 13px;
-    }
-    #pdfContent .pdf-summary span {
-      font-weight: 500;
-    }
-    #pdfContent .pdf-footer {
-      margin-top: 15px;
-      text-align: left;
-      font-size: 11px;
-      color: #666;
-      border-top: 2px solid #0b2b3f;
-      padding-top: 8px;
-      display: flex;
-      justify-content: space-between;
-    }
+        /* PDF Styles */
+        #pdfContent {
+            display: none;
+        }
+        .pdf-page {
+            background: white;
+            padding: 15px 20px;
+            width: 800px;
+            margin: 0 auto;
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            direction: rtl;
+            color: #1a1a1a;
+            page-break-after: always;
+            box-sizing: border-box;
+        }
+        .pdf-page:last-child {
+            page-break-after: auto;
+        }
+        .pdf-page .pdf-header {
+            background: #0b2b3f;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .pdf-page .pdf-header h2 {
+            font-size: 15px;
+            margin: 0;
+        }
+        .pdf-page .pdf-header p {
+            margin: 2px 0 0;
+            opacity: 0.9;
+            font-size: 11px;
+        }
+        .pdf-page .pdf-section {
+            margin-bottom: 6px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 5px;
+        }
+        .pdf-page .pdf-section h4 {
+            color: #0b2b3f;
+            margin: 0 0 3px 0;
+            font-size: 12px;
+        }
+        .pdf-page .pdf-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1px 0;
+            font-size: 9px;
+            border-bottom: 1px dashed #f0f0f0;
+        }
+        .pdf-page .pdf-row .label {
+            font-weight: 600;
+        }
+        .pdf-page .pdf-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8.5px;
+            margin: 3px 0;
+        }
+        .pdf-page .pdf-table th {
+            background: #eef3f9;
+            padding: 2px 3px;
+            border: 1px solid #ccc;
+            text-align: center;
+            font-weight: 600;
+        }
+        .pdf-page .pdf-table td {
+            padding: 2px 3px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .pdf-page .pdf-summary {
+            background: #f0f6fe;
+            padding: 5px 8px;
+            border-radius: 5px;
+            margin-top: 3px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px 12px;
+            font-size: 10px;
+        }
+        .pdf-page .pdf-summary span {
+            font-weight: 500;
+        }
+        .pdf-page .pdf-footer {
+            margin-top: 8px;
+            text-align: left;
+            font-size: 8px;
+            color: #666;
+            border-top: 2px solid #0b2b3f;
+            padding-top: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
 
-    @media (max-width: 700px) {
-      .container {
-        padding: 1rem;
-      }
-      .sub-grid {
-        grid-template-columns: 1fr;
-      }
-      .header {
-        flex-direction: column;
-        align-items: start;
-        gap: 0.5rem;
-      }
-      .actions {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .btn {
-        justify-content: center;
-      }
-      .machine-row {
-        grid-template-columns: 1.5fr 0.8fr 1fr 0.8fr 1fr 0.3fr;
-      }
-      .prod-row {
-        grid-template-columns: 1fr 0.6fr 0.6fr 1fr 0.3fr;
-      }
-    }
-  </style>
+        @media (max-width: 700px) {
+            .container {
+                padding: 1rem;
+            }
+            .sub-grid {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                flex-direction: column;
+                align-items: start;
+                gap: 0.5rem;
+            }
+            .actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .btn {
+                justify-content: center;
+            }
+            .machine-row {
+                grid-template-columns: 1.5fr 0.8fr 1fr 0.8fr 1fr 0.3fr;
+            }
+            .prod-row {
+                grid-template-columns: 1fr 0.6fr 0.6fr 1fr 0.3fr;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<div class="container" id="reportContainer">
+    <div class="container" id="reportContainer">
 
-  <div class="header">
-    <h1><i class="fas fa-clipboard-list"></i> کمال افغان · ورځنی راپور</h1>
-    <div class="header-badges">
-      <span><i class="far fa-calendar-alt"></i> <span id="displayDate"></span></span>
-      <span><i class="fas fa-hashtag"></i> <span id="displayReportId"></span></span>
-      <span><i class="fas fa-users"></i> <span id="displayTotalEmployees">۰</span></span>
-    </div>
-  </div>
-
-  <div id="statusMessage" class="status"></div>
-
-  <form id="reportForm">
-
-    <div class="info-grid">
-      <label>شروع <input type="time" id="startTime" value="07:30" /></label>
-      <label>وقفه <input type="time" id="breakTime" value="12:00" /></label>
-      <label>شروع <input type="time" id="resumeTime" value="13:00" /></label>
-      <label>ختم <input type="time" id="endTime" value="16:30" /></label>
-      <label>تاریخ <input type="date" id="reportDate" /></label>
-      <label>ځای <input type="text" id="siteName" value="حصارک" /></label>
-      <label>راپور شمیره <input type="text" id="reportId" readonly /></label>
-      <label>راپور ورکوونکی <input type="text" id="reporterName" value="انجنیر احمد" /></label>
-      <label>دنده <input type="text" id="reporterRole" value="د ساحې انجنیر" /></label>
-      <label>WhatsApp شمیره <input type="text" id="whatsappNumber" value="+93780498288" placeholder="+93780498288" /></label>
-    </div>
-
-    <!-- EMPLOYEE TABLE -->
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>نوم</th>
-            <th>دنده</th>
-            <th>حاضر</th>
-            <th>غیر حاضر</th>
-            <th>علت</th>
-            <th>ملاحظات</th>
-            <th style="width:30px;"></th>
-          </tr>
-        </thead>
-        <tbody id="employeeBody"></tbody>
-      </table>
-      <button type="button" class="btn-add-row" id="addEmployeeBtn"><i class="fas fa-plus-circle"></i> کارکوونکی اضافه کړئ</button>
-    </div>
-
-    <!-- MACHINES & PRODUCTION -->
-    <div class="sub-grid">
-      <div class="sub-card">
-        <div class="card-header">
-          <h3><i class="fas fa-cogs"></i> ماشینرۍ</h3>
-          <button type="button" class="btn-sm" id="addMachineBtn"><i class="fas fa-plus"></i> اضافه</button>
-        </div>
-        <div id="machineContainer"></div>
-      </div>
-      <div class="sub-card">
-        <div class="card-header">
-          <h3><i class="fas fa-truck"></i> تولید</h3>
-          <button type="button" class="btn-sm" id="addProductionBtn"><i class="fas fa-plus"></i> اضافه</button>
-        </div>
-        <div id="productionContainer"></div>
-      </div>
-    </div>
-
-    <!-- TEXTAREAS -->
-    <div class="textarea-group">
-      <textarea id="workSummary" rows="2" placeholder="نن ورځ تر سره شوي کارونه ...">د مرمر استخراج او بارګیری بشپړ شو.</textarea>
-      <textarea id="challenges" rows="2" placeholder="ستونزې ...">د اکسکواټور خرابوالی.</textarea>
-      <textarea id="suggestions" rows="2" placeholder="وړاندیزونه ...">پرزې امر شوي.</textarea>
-    </div>
-
-    <!-- SUMMARY -->
-    <div class="summary-panel">
-      <span class="stat"><i class="fas fa-user-check"></i> حاضر: <strong id="presentCount">۰</strong></span>
-      <span class="stat"><i class="fas fa-user-times"></i> غیر حاضر: <strong id="absentCount">۰</strong></span>
-      <span class="stat"><i class="fas fa-clock"></i> ساعته: <strong id="totalHours">۰</strong></span>
-      <span class="stat"><i class="fas fa-weight-hanging"></i> استخراج: <strong id="totalProduction">۰</strong> ټن</span>
-      <span class="stat"><i class="fas fa-cogs"></i> ماشینونه: <strong id="totalMachines">۰</strong></span>
-    </div>
-
-    <!-- ACTIONS -->
-    <div class="actions">
-      <div class="signature">
-        <i class="fas fa-pen-fancy"></i> لاسلیک: <span id="signatureName">انجنیر احمد</span>
-      </div>
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button type="button" class="btn btn-outline" id="printBtn"><i class="fas fa-print"></i> چاپ</button>
-        <button type="button" class="btn btn-download" id="downloadPdfBtn"><i class="fas fa-file-pdf"></i> PDF ډاونلوډ</button>
-        <button type="button" class="btn btn-whatsapp" id="whatsappBtn"><i class="fab fa-whatsapp"></i> WhatsApp PDF</button>
-        <button type="button" class="btn btn-primary" id="submitBtn"><i class="fas fa-save"></i> ثبت</button>
-      </div>
-    </div>
-
-  </form>
-</div>
-
-<!-- PDF Content -->
-<div id="pdfContent" style="display:none;"></div>
-
-<script>
-  (function() {
-    'use strict';
-
-    // ===== DEFAULT DATA =====
-    const defaultEmployees = [
-      { name: 'علی رضا', role: 'آپریټر', present: true, absent: false, reason: '', note: '' },
-      { name: 'محمد ناصر', role: 'میکانیک', present: true, absent: false, reason: '', note: '' },
-      { name: 'حسین', role: 'ډرایور', present: false, absent: true, reason: 'رخصتی', note: 'سبا راځي' },
-      { name: 'جمشید', role: 'لوډر', present: true, absent: false, reason: '', note: '' },
-      { name: 'نادر', role: 'جنراتورچی', present: true, absent: false, reason: '', note: '' },
-    ];
-
-    const defaultMachines = [
-      { name: 'جنراتور (۲)', status: 'فعال', hours: '۴.۵', fuel: '۱۲۰L', area: '--' },
-      { name: 'اکسکواټور (۱)', status: 'غیرفعال', hours: '--', fuel: '--', area: 'ډمپر ۳' },
-      { name: 'لوډر (۳)', status: 'فعال', hours: '۶.۲', fuel: '۲۰۰L', area: 'ډاکسن ۱' },
-      { name: 'ډمپر (۴)', status: 'فعال', hours: '۸.۰', fuel: '۳۴۰L', area: 'ډمپر ۲' },
-    ];
-
-    const defaultProduction = [
-      { stage: 'اکتشاف', tons: '۱۵۰', measure: 'متر', note: '' },
-      { stage: 'استخراج', tons: '۸۴۰', measure: 'ټن', note: 'مرمر' },
-      { stage: 'بارګیری', tons: '۳۲۰', measure: 'ټن', note: 'لوډر' },
-      { stage: 'انتقالات', tons: '۴۵۰', measure: 'ټن', note: 'ډمپر' },
-    ];
-
-    let employees = JSON.parse(JSON.stringify(defaultEmployees));
-    let machines = JSON.parse(JSON.stringify(defaultMachines));
-    let production = JSON.parse(JSON.stringify(defaultProduction));
-
-    // ===== DOM REFS =====
-    const employeeBody = document.getElementById('employeeBody');
-    const machineContainer = document.getElementById('machineContainer');
-    const productionContainer = document.getElementById('productionContainer');
-    const addEmployeeBtn = document.getElementById('addEmployeeBtn');
-    const addMachineBtn = document.getElementById('addMachineBtn');
-    const addProductionBtn = document.getElementById('addProductionBtn');
-    const statusEl = document.getElementById('statusMessage');
-
-    const displayDate = document.getElementById('displayDate');
-    const displayReportId = document.getElementById('displayReportId');
-    const displayTotalEmployees = document.getElementById('displayTotalEmployees');
-    const presentCount = document.getElementById('presentCount');
-    const absentCount = document.getElementById('absentCount');
-    const totalHours = document.getElementById('totalHours');
-    const totalProduction = document.getElementById('totalProduction');
-    const totalMachines = document.getElementById('totalMachines');
-    const signatureName = document.getElementById('signatureName');
-    const reportDate = document.getElementById('reportDate');
-    const reportIdInput = document.getElementById('reportId');
-    const reporterName = document.getElementById('reporterName');
-    const pdfContent = document.getElementById('pdfContent');
-
-    // ===== HELPERS =====
-    function generateReportId() {
-      const now = new Date();
-      const y = now.getFullYear().toString().slice(2);
-      const m = String(now.getMonth() + 1).padStart(2, '0');
-      const d = String(now.getDate()).padStart(2, '0');
-      return `R-${y}${m}${d}-${String(Math.floor(Math.random() * 100)).padStart(2, '0')}`;
-    }
-
-    function formatDate(dateStr) {
-      if (!dateStr) return '---';
-      const d = new Date(dateStr + 'T00:00:00');
-      return d.toLocaleDateString('fa-IR', { year: 'numeric', month: '2-digit', day: '2-digit' });
-    }
-
-    function showStatus(msg, type = 'info') {
-      statusEl.textContent = msg;
-      statusEl.className = `status ${type}`;
-      setTimeout(() => { statusEl.className = 'status'; }, 6000);
-    }
-
-    function collectData() {
-      return {
-        reportId: reportIdInput.value,
-        date: reportDate.value,
-        site: document.getElementById('siteName').value,
-        reporter: reporterName.value,
-        role: document.getElementById('reporterRole').value,
-        whatsapp: document.getElementById('whatsappNumber').value,
-        times: {
-          start: document.getElementById('startTime').value,
-          break: document.getElementById('breakTime').value,
-          resume: document.getElementById('resumeTime').value,
-          end: document.getElementById('endTime').value,
-        },
-        employees: employees,
-        machines: machines,
-        production: production,
-        summary: {
-          work: document.getElementById('workSummary').value,
-          challenges: document.getElementById('challenges').value,
-          suggestions: document.getElementById('suggestions').value,
-        },
-        totals: {
-          present: employees.filter(e => e.present).length,
-          absent: employees.filter(e => e.absent).length,
-          hours: totalHours.textContent,
-          production: totalProduction.textContent,
-          machines: machines.length,
-        }
-      };
-    }
-
-    // ===== GENERATE PDF HTML =====
-    function generatePDFHTML(data) {
-      const dateFormatted = formatDate(data.date);
-      let html = `
-        <div class="pdf-header">
-          <h2>📋 کمال افغان - ورځنی راپور</h2>
-          <p>${data.reportId} | ${dateFormatted} | ${data.site}</p>
+        <div class="header no-print">
+            <div class="header-left">
+                <div class="logo-container">
+                    <i class="fas fa-gem logo-icon"></i>
+                    <div>
+                        <div class="logo-text">Precious &amp; Semi<br>Precious Gemstones</div>
+                        <div class="logo-sub">Extraction &amp; Processing Co.</div>
+                    </div>
+                </div>
+                <h1><i class="fas fa-clipboard-list"></i> کمال افغان · ورځنی راپور</h1>
+            </div>
+            <div class="header-badges">
+                <span><i class="far fa-calendar-alt"></i> <span id="displayDate"></span></span>
+                <span><i class="fas fa-hashtag"></i> <span id="displayReportId"></span></span>
+                <span><i class="fas fa-users"></i> <span id="displayTotalEmployees">۰</span></span>
+                <span class="auto-save-indicator"><i class="fas fa-save"></i> <span id="autoSaveStatus">خوندي شو</span></span>
+            </div>
         </div>
 
-        <div class="pdf-section">
-          <h4>👤 د راپور معلومات</h4>
-          <div class="pdf-row"><span class="label">راپور شمیره:</span> <span>${data.reportId}</span></div>
-          <div class="pdf-row"><span class="label">نېټه:</span> <span>${dateFormatted}</span></div>
-          <div class="pdf-row"><span class="label">ځای:</span> <span>${data.site}</span></div>
-          <div class="pdf-row"><span class="label">راپور ورکوونکی:</span> <span>${data.reporter} (${data.role})</span></div>
-          <div class="pdf-row"><span class="label">د کار وخت:</span> <span>${data.times.start} | ${data.times.break} | ${data.times.resume} | ${data.times.end}</span></div>
-        </div>
+        <div id="statusMessage" class="status no-print"></div>
 
-        <div class="pdf-section">
-          <h4>👥 کارکوونکي</h4>
-          <table class="pdf-table">
-            <thead><tr><th>#</th><th>نوم</th><th>دنده</th><th>حالت</th><th>علت</th><th>ملاحظات</th></tr></thead>
-            <tbody>`;
-      data.employees.forEach((e, i) => {
-        const status = e.present ? '✅ حاضر' : (e.absent ? '❌ غیر حاضر' : '');
-        html += `<tr><td>${i+1}</td><td>${e.name}</td><td>${e.role}</td><td>${status}</td><td>${e.reason || '-'}</td><td>${e.note || '-'}</td></tr>`;
-      });
-      html += `</tbody></table></div>
+        <form id="reportForm">
 
-        <div class="pdf-section">
-          <h4>🔧 ماشینرۍ (${data.machines.length})</h4>
-          <table class="pdf-table">
-            <thead><tr><th>#</th><th>ماشین</th><th>وضعیت</th><th>ساعته</th><th>تیلو</th><th>ساحه</th></tr></thead>
-            <tbody>`;
-      data.machines.forEach((m, i) => {
-        html += `<tr><td>${i+1}</td><td>${m.name}</td><td>${m.status}</td><td>${m.hours}</td><td>${m.fuel}</td><td>${m.area}</td></tr>`;
-      });
-      html += `</tbody></table></div>
+            <div class="info-grid">
+                <label>شروع <input type="time" id="startTime" value="07:30" /></label>
+                <label>وقفه <input type="time" id="breakTime" value="12:00" /></label>
+                <label>شروع <input type="time" id="resumeTime" value="13:00" /></label>
+                <label>ختم <input type="time" id="endTime" value="16:30" /></label>
+                <label>تاریخ <input type="date" id="reportDate" /></label>
+                <label>ځای <input type="text" id="siteName" value="دوسرکي دفتر" /></label>
+                <label>راپور شمیره <input type="text" id="reportId" value="R-260713-70" placeholder="د راپور شمیره" /></label>
+                <label>راپور ورکوونکی <input type="text" id="reporterName" value="انجنیر احمد" /></label>
+                <label>دنده <input type="text" id="reporterRole" value="د ساحې انجنیر" /></label>
+                <label>WhatsApp <input type="text" id="whatsappNumber" value="+93780498288" placeholder="+93780498288" /></label>
+            </div>
 
-        <div class="pdf-section">
-          <h4>⛏️ تولید (${data.production.length})</h4>
-          <table class="pdf-table">
-            <thead><tr><th>#</th><th>مرحله</th><th>ټن</th><th>اندازه</th><th>یادشتونه</th></tr></thead>
-            <tbody>`;
-      data.production.forEach((p, i) => {
-        html += `<tr><td>${i+1}</td><td>${p.stage}</td><td>${p.tons}</td><td>${p.measure}</td><td>${p.note || '-'}</td></tr>`;
-      });
-      html += `</tbody></table></div>
+            <div class="section-title"><i class="fas fa-users"></i> عمومی معلومات</div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>نوم</th>
+                            <th>دنده</th>
+                            <th>حاضر</th>
+                            <th>غیر حاضر</th>
+                            <th>علت</th>
+                            <th>ملاحظات</th>
+                            <th style="width:25px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeeBody"></tbody>
+                </table>
+                <button type="button" class="btn-add-row no-print" id="addEmployeeBtn"><i class="fas fa-plus-circle"></i> کارکوونکی</button>
+            </div>
 
-        <div class="pdf-section">
-          <h4>📝 لنډیز</h4>
-          <div class="pdf-summary">
-            <span>👥 حاضر: ${data.totals.present} | غیر حاضر: ${data.totals.absent}</span>
-            <span>⏰ ساعته: ${data.totals.hours}</span>
-            <span>⛏️ استخراج: ${data.totals.production} ټن</span>
-            <span>🔧 ماشینونه: ${data.totals.machines}</span>
-          </div>
-        </div>`;
+            <div class="sub-grid">
+                <div class="sub-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-cogs"></i> ماشینرۍ</h3>
+                        <button type="button" class="btn-sm no-print" id="addMachineBtn"><i class="fas fa-plus"></i> اضافه</button>
+                    </div>
+                    <div id="machineContainer"></div>
+                </div>
+                <div class="sub-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-truck"></i> تولید</h3>
+                        <button type="button" class="btn-sm no-print" id="addProductionBtn"><i class="fas fa-plus"></i> اضافه</button>
+                    </div>
+                    <div id="productionContainer"></div>
+                </div>
+            </div>
 
-      if (data.summary.work) {
-        html += `<div class="pdf-section"><h4>📋 ترسره شوي کارونه</h4><p style="font-size:13px;">${data.summary.work}</p></div>`;
-      }
-      if (data.summary.challenges) {
-        html += `<div class="pdf-section"><h4>⚠️ ستونزې</h4><p style="font-size:13px;">${data.summary.challenges}</p></div>`;
-      }
-      if (data.summary.suggestions) {
-        html += `<div class="pdf-section"><h4>💡 وړاندیزونه</h4><p style="font-size:13px;">${data.summary.suggestions}</p></div>`;
-      }
+            <div class="section-title"><i class="fas fa-tasks"></i> نن ورځ تر سره شوي کارونه</div>
+            <div class="textarea-group">
+                <textarea id="workSummary" rows="2" placeholder="تشریح ..."></textarea>
+            </div>
 
-      html += `
-        <div class="pdf-footer">
-          <span>لاسلیک: ${data.reporter}</span>
-          <span>${dateFormatted}</span>
-        </div>`;
-      return html;
-    }
+            <div class="section-title"><i class="fas fa-exclamation-triangle"></i> ستونزې او ننګونې</div>
+            <div class="textarea-group">
+                <textarea id="challenges" rows="2" placeholder="تشریح ..."></textarea>
+            </div>
 
-    // ===== GENERATE PDF BLOB =====
-    async function generatePDFBlob(data) {
-      pdfContent.innerHTML = generatePDFHTML(data);
-      pdfContent.style.display = 'block';
+            <div class="section-title"><i class="fas fa-lightbulb"></i> وړاندیز او حل لارې</div>
+            <div class="textarea-group">
+                <textarea id="suggestions" rows="2" placeholder="تشریح ..."></textarea>
+            </div>
 
-      const canvas = await html2canvas(pdfContent, {
-        scale: 2,
-        backgroundColor: '#ffffff',
-        logging: false,
-        width: 800,
-      });
+            <div class="summary-panel">
+                <span class="stat"><i class="fas fa-user-check"></i> حاضر: <strong id="presentCount">۰</strong></span>
+                <span class="stat"><i class="fas fa-user-times"></i> غیر حاضر: <strong id="absentCount">۰</strong></span>
+                <span class="stat"><i class="fas fa-clock"></i> ساعته: <strong id="totalHours">۰</strong></span>
+                <span class="stat"><i class="fas fa-weight-hanging"></i> استخراج: <strong id="totalProduction">۰</strong> ټن</span>
+                <span class="stat"><i class="fas fa-cogs"></i> ماشینونه: <strong id="totalMachines">۰</strong></span>
+            </div>
 
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const imgData = canvas.toDataURL('image/jpeg', 0.95);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+            <div class="actions no-print">
+                <div class="signature">
+                    <i class="fas fa-pen-fancy"></i> لاسلیک: <span id="signatureName">انجنیر احمد</span>
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button type="button" class="btn btn-outline" id="printBtn"><i class="fas fa-print"></i> چاپ</button>
+                    <button type="button" class="btn btn-excel" id="excelBtn"><i class="fas fa-file-excel"></i> Excel</button>
+                    <button type="button" class="btn btn-whatsapp" id="whatsappBtn"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                    <button type="button" class="btn btn-danger" id="clearBtn"><i class="fas fa-eraser"></i> Clear</button>
+                    <button type="button" class="btn btn-success" id="saveBtn"><i class="fas fa-save"></i> Save</button>
+                </div>
+            </div>
 
-      pdfContent.style.display = 'none';
-      return pdf.output('blob');
-    }
+        </form>
 
-    // ===== DOWNLOAD PDF =====
-    document.getElementById('downloadPdfBtn').addEventListener('click', async function() {
-      const data = collectData();
-      try {
-        showStatus('⏳ PDF جوړیږي ...', 'info');
-        const blob = await generatePDFBlob(data);
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `رپور-${data.reportId}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setTimeout(() => URL.revokeObjectURL(url), 5000);
-        showStatus('✅ PDF ډاونلوډ شو!', 'success');
-      } catch (err) {
-        showStatus('❌ خطا: ' + err.message, 'error');
-      }
-    });
+    </div>
 
-    // ===== WHATSAPP PDF =====
-    document.getElementById('whatsappBtn').addEventListener('click', async function() {
-      const data = collectData();
-      const phone = data.whatsapp || '+93780498288';
-      const cleanPhone = phone.replace(/\s/g, '').replace(/^0/, '+93');
+    <!-- PDF Content -->
+    <div id="pdfContent"></div>
 
-      try {
-        showStatus('⏳ PDF جوړیږي ...', 'info');
+    <script>
+        (function() {
+            'use strict';
 
-        const blob = await generatePDFBlob(data);
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `رپور-${data.reportId}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setTimeout(() => URL.revokeObjectURL(url), 5000);
+            // ===== DEFAULT DATA =====
+            const defaultEmployees = [
+                { name: 'خالد', role: 'مدیر', present: true, absent: false, reason: '', note: '' },
+                { name: 'ولي', role: 'صفاکار', present: true, absent: false, reason: '', note: '' },
+                { name: 'نوید', role: 'کاریګر', present: true, absent: false, reason: '', note: '' },
+                { name: 'ولید', role: 'درویور', present: true, absent: false, reason: '', note: '' },
+                { name: 'خان', role: 'انجینر', present: false, absent: true, reason: '', note: '' },
+                { name: 'ولي خان', role: '', present: true, absent: false, reason: '', note: '' },
+                { name: '', role: '', present: true, absent: false, reason: '', note: '' },
+                { name: '', role: '', present: true, absent: false, reason: '', note: '' },
+            ];
 
-        const msg = `📋 *ورځنی راپور - کمال افغان*\n📌 ${data.reportId}\n📅 ${formatDate(data.date)}\n👤 ${data.reporter}\n\n📎 PDF فایل ډاونلوډ شو، مهرباني وکړئ یې د WhatsApp له لارې واستوئ.`;
-        const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
-        window.open(waUrl, '_blank');
+            const defaultMachines = [
+                { name: 'جنراتور ( )', status: 'فعال', hours: '', fuel: '', area: '' },
+                { name: 'اکسکواټور ( )', status: 'فعال', hours: '', fuel: '', area: '' },
+                { name: 'لوډر ( )', status: 'فعال', hours: '', fuel: '', area: '' },
+                { name: 'ډمپر ( )', status: 'فعال', hours: '', fuel: '', area: '' },
+            ];
 
-        showStatus('✅ PDF ډاونلوډ شو! WhatsApp پرانیستل شو.', 'success');
-      } catch (err) {
-        showStatus('❌ خطا: ' + err.message, 'error');
-      }
-    });
+            const defaultProduction = [
+                { stage: 'اکتشاف مرحله', tons: '', measure: '', note: '' },
+                { stage: 'استخراج', tons: '', measure: '', note: '' },
+                { stage: 'بارګیری', tons: '', measure: '', note: '' },
+                { stage: 'انتقالات', tons: '', measure: '', note: '' },
+            ];
 
-    // ===== RENDER FUNCTIONS =====
+            let employees = JSON.parse(JSON.stringify(defaultEmployees));
+            let machines = JSON.parse(JSON.stringify(defaultMachines));
+            let production = JSON.parse(JSON.stringify(defaultProduction));
+            let autoSaveTimer = null;
 
-    // --- Employees ---
-    function renderEmployees() {
-      employeeBody.innerHTML = '';
-      employees.forEach((emp, i) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><input type="text" class="emp-name" value="${emp.name}" data-i="${i}" /></td>
-          <td><input type="text" class="emp-role" value="${emp.role}" data-i="${i}" /></td>
-          <td style="text-align:center;"><input type="checkbox" class="emp-present" ${emp.present ? 'checked' : ''} data-i="${i}" /></td>
-          <td style="text-align:center;"><input type="checkbox" class="emp-absent" ${emp.absent ? 'checked' : ''} data-i="${i}" /></td>
-          <td><input type="text" class="emp-reason" value="${emp.reason}" placeholder="علت" data-i="${i}" /></td>
-          <td><input type="text" class="emp-note" value="${emp.note}" placeholder="یادونه" data-i="${i}" /></td>
-          <td><button type="button" class="btn-remove-row" data-i="${i}"><i class="fas fa-times"></i></button></td>
-        `;
-        employeeBody.appendChild(tr);
-      });
+            // ===== DOM REFS =====
+            const employeeBody = document.getElementById('employeeBody');
+            const machineContainer = document.getElementById('machineContainer');
+            const productionContainer = document.getElementById('productionContainer');
+            const addEmployeeBtn = document.getElementById('addEmployeeBtn');
+            const addMachineBtn = document.getElementById('addMachineBtn');
+            const addProductionBtn = document.getElementById('addProductionBtn');
+            const statusEl = document.getElementById('statusMessage');
+            const autoSaveStatus = document.getElementById('autoSaveStatus');
+            const pdfContent = document.getElementById('pdfContent');
 
-      document.querySelectorAll('.emp-present, .emp-absent').forEach(el => el.addEventListener('change', updateEmployee));
-      document.querySelectorAll('.emp-name, .emp-role, .emp-reason, .emp-note').forEach(el => el.addEventListener('input', updateEmployee));
-      document.querySelectorAll('#employeeBody .btn-remove-row').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const idx = parseInt(this.dataset.i);
-          if (employees.length > 1) {
-            employees.splice(idx, 1);
-            renderEmployees();
-            updateSummary();
-          } else {
-            showStatus('لږ تر لږه یو کارکوونکی باید وي.', 'error');
-          }
-        });
-      });
-      updateSummary();
-    }
+            const displayDate = document.getElementById('displayDate');
+            const displayReportId = document.getElementById('displayReportId');
+            const displayTotalEmployees = document.getElementById('displayTotalEmployees');
+            const presentCount = document.getElementById('presentCount');
+            const absentCount = document.getElementById('absentCount');
+            const totalHours = document.getElementById('totalHours');
+            const totalProduction = document.getElementById('totalProduction');
+            const totalMachines = document.getElementById('totalMachines');
+            const signatureName = document.getElementById('signatureName');
+            const reportDate = document.getElementById('reportDate');
+            const reportIdInput = document.getElementById('reportId');
+            const reporterName = document.getElementById('reporterName');
+            const siteName = document.getElementById('siteName');
+            const whatsappNumber = document.getElementById('whatsappNumber');
 
-    function updateEmployee(e) {
-      const idx = parseInt(e.target.dataset.i);
-      const row = employeeBody.children[idx];
-      if (!row) return;
-      employees[idx].name = row.querySelector('.emp-name').value;
-      employees[idx].role = row.querySelector('.emp-role').value;
-      employees[idx].present = row.querySelector('.emp-present').checked;
-      employees[idx].absent = row.querySelector('.emp-absent').checked;
-      employees[idx].reason = row.querySelector('.emp-reason').value;
-      employees[idx].note = row.querySelector('.emp-note').value;
-      updateSummary();
-    }
+            // ===== HELPERS =====
+            function formatDate(dateStr) {
+                if (!dateStr) return '---';
+                const d = new Date(dateStr + 'T00:00:00');
+                return d.toLocaleDateString('fa-IR', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            }
 
-    // --- Machines ---
-    function renderMachines() {
-      machineContainer.innerHTML = '';
-      // Header
-      const header = document.createElement('div');
-      header.className = 'machine-row';
-      header.style.fontWeight = '600';
-      header.style.color = '#1f3a4b';
-      header.style.fontSize = '0.75rem';
-      header.innerHTML = `<span>ماشین</span><span>وضعیت</span><span>ساعته</span><span>تیلو</span><span>ساحه</span><span></span>`;
-      machineContainer.appendChild(header);
+            function showStatus(msg, type = 'info') {
+                statusEl.textContent = msg;
+                statusEl.className = `status ${type}`;
+                setTimeout(() => { statusEl.className = 'status'; }, 4000);
+            }
 
-      machines.forEach((m, i) => {
-        const row = document.createElement('div');
-        row.className = 'machine-row';
-        row.innerHTML = `
-          <input type="text" class="mach-name" value="${m.name}" data-i="${i}" placeholder="نوم" />
-          <select class="mach-status" data-i="${i}">
-            <option value="فعال" ${m.status === 'فعال' ? 'selected' : ''}>فعال</option>
-            <option value="غیرفعال" ${m.status === 'غیرفعال' ? 'selected' : ''}>غیرفعال</option>
-          </select>
-          <input type="text" class="mach-hours" value="${m.hours}" data-i="${i}" placeholder="ساعته" />
-          <input type="text" class="mach-fuel" value="${m.fuel}" data-i="${i}" placeholder="تیلو" />
-          <input type="text" class="mach-area" value="${m.area}" data-i="${i}" placeholder="ساحه" />
-          <button type="button" class="btn-remove-row" data-i="${i}"><i class="fas fa-times"></i></button>
-        `;
-        machineContainer.appendChild(row);
-      });
+            function collectData() {
+                return {
+                    reportId: reportIdInput.value,
+                    date: reportDate.value,
+                    site: siteName.value,
+                    reporter: reporterName.value,
+                    role: document.getElementById('reporterRole').value,
+                    whatsapp: whatsappNumber.value,
+                    times: {
+                        start: document.getElementById('startTime').value,
+                        break: document.getElementById('breakTime').value,
+                        resume: document.getElementById('resumeTime').value,
+                        end: document.getElementById('endTime').value,
+                    },
+                    employees: employees,
+                    machines: machines,
+                    production: production,
+                    summary: {
+                        work: document.getElementById('workSummary').value,
+                        challenges: document.getElementById('challenges').value,
+                        suggestions: document.getElementById('suggestions').value,
+                    },
+                    totals: {
+                        present: employees.filter(e => e.present).length,
+                        absent: employees.filter(e => e.absent).length,
+                        hours: totalHours.textContent,
+                        production: totalProduction.textContent,
+                        machines: machines.length,
+                    },
+                    updatedAt: new Date().toISOString()
+                };
+            }
 
-      document.querySelectorAll('#machineContainer .mach-name, #machineContainer .mach-status, #machineContainer .mach-hours, #machineContainer .mach-fuel, #machineContainer .mach-area')
-        .forEach(el => el.addEventListener('input', updateMachine));
-      document.querySelectorAll('#machineContainer .btn-remove-row').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const idx = parseInt(this.dataset.i);
-          if (machines.length > 1) {
-            machines.splice(idx, 1);
-            renderMachines();
-            updateSummary();
-          } else {
-            showStatus('لږ تر لږه یو ماشین باید وي.', 'error');
-          }
-        });
-      });
-      updateSummary();
-    }
+            function loadData(data) {
+                reportIdInput.value = data.reportId;
+                reportDate.value = data.date;
+                siteName.value = data.site;
+                reporterName.value = data.reporter;
+                document.getElementById('reporterRole').value = data.role || '';
+                whatsappNumber.value = data.whatsapp || '+93780498288';
+                document.getElementById('startTime').value = data.times.start || '07:30';
+                document.getElementById('breakTime').value = data.times.break || '12:00';
+                document.getElementById('resumeTime').value = data.times.resume || '13:00';
+                document.getElementById('endTime').value = data.times.end || '16:30';
+                document.getElementById('workSummary').value = data.summary.work || '';
+                document.getElementById('challenges').value = data.summary.challenges || '';
+                document.getElementById('suggestions').value = data.summary.suggestions || '';
 
-    function updateMachine(e) {
-      const idx = parseInt(e.target.dataset.i);
-      const rows = machineContainer.querySelectorAll('.machine-row');
-      const row = rows[idx + 1];
-      if (!row) return;
-      machines[idx].name = row.querySelector('.mach-name').value;
-      machines[idx].status = row.querySelector('.mach-status').value;
-      machines[idx].hours = row.querySelector('.mach-hours').value;
-      machines[idx].fuel = row.querySelector('.mach-fuel').value;
-      machines[idx].area = row.querySelector('.mach-area').value;
-      updateSummary();
-    }
+                employees = JSON.parse(JSON.stringify(data.employees));
+                machines = JSON.parse(JSON.stringify(data.machines));
+                production = JSON.parse(JSON.stringify(data.production));
 
-    // --- Production ---
-    function renderProduction() {
-      productionContainer.innerHTML = '';
-      const header = document.createElement('div');
-      header.className = 'prod-row';
-      header.style.fontWeight = '600';
-      header.style.color = '#1f3a4b';
-      header.style.fontSize = '0.75rem';
-      header.innerHTML = `<span>مرحله</span><span>ټن</span><span>اندازه</span><span>یادشتونه</span><span></span>`;
-      productionContainer.appendChild(header);
+                renderEmployees();
+                renderMachines();
+                renderProduction();
+                updateSummary();
+                displayReportId.textContent = data.reportId;
+                displayDate.textContent = formatDate(data.date);
+                autoSaveStatus.textContent = 'راپور بار شو';
+                autoSaveStatus.style.color = '#1a7a3a';
+            }
 
-      production.forEach((p, i) => {
-        const row = document.createElement('div');
-        row.className = 'prod-row';
-        row.innerHTML = `
-          <input type="text" class="prod-stage" value="${p.stage}" data-i="${i}" placeholder="مرحله" />
-          <input type="text" class="prod-tons" value="${p.tons}" data-i="${i}" placeholder="ټن" />
-          <input type="text" class="prod-measure" value="${p.measure}" data-i="${i}" placeholder="اندازه" />
-          <input type="text" class="prod-note" value="${p.note}" data-i="${i}" placeholder="یادونه" />
-          <button type="button" class="btn-remove-row" data-i="${i}"><i class="fas fa-times"></i></button>
-        `;
-        productionContainer.appendChild(row);
-      });
+            // ===== AUTO SAVE =====
+            function autoSave() {
+                const data = collectData();
+                localStorage.setItem('dailyReportDraft', JSON.stringify(data));
+                autoSaveStatus.textContent = 'اتوماتیک ✓';
+                autoSaveStatus.style.color = '#1a7a3a';
+            }
 
-      document.querySelectorAll('#productionContainer .prod-stage, #productionContainer .prod-tons, #productionContainer .prod-measure, #productionContainer .prod-note')
-        .forEach(el => el.addEventListener('input', updateProduction));
-      document.querySelectorAll('#productionContainer .btn-remove-row').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const idx = parseInt(this.dataset.i);
-          if (production.length > 1) {
-            production.splice(idx, 1);
-            renderProduction();
-            updateSummary();
-          } else {
-            showStatus('لږ تر لږه یو تولید باید وي.', 'error');
-          }
-        });
-      });
-      updateSummary();
-    }
+            function triggerAutoSave() {
+                clearTimeout(autoSaveTimer);
+                autoSaveTimer = setTimeout(autoSave, 800);
+            }
 
-    function updateProduction(e) {
-      const idx = parseInt(e.target.dataset.i);
-      const rows = productionContainer.querySelectorAll('.prod-row');
-      const row = rows[idx + 1];
-      if (!row) return;
-      production[idx].stage = row.querySelector('.prod-stage').value;
-      production[idx].tons = row.querySelector('.prod-tons').value;
-      production[idx].measure = row.querySelector('.prod-measure').value;
-      production[idx].note = row.querySelector('.prod-note').value;
-      updateSummary();
-    }
+            // ===== GENERATE PDF PAGES =====
+            function generatePDFPages(data) {
+                const dateFormatted = formatDate(data.date);
+                const ROWS_PER_PAGE = 16;
+                const pages = [];
 
-    // ===== ADD BUTTONS =====
-    addEmployeeBtn.addEventListener('click', function() {
-      employees.push({ name: 'نوی کارکوونکی', role: 'دنده', present: true, absent: false, reason: '', note: '' });
-      renderEmployees();
-    });
+                function chunkArray(arr, size) {
+                    const chunks = [];
+                    for (let i = 0; i < arr.length; i += size) {
+                        chunks.push(arr.slice(i, i + size));
+                    }
+                    return chunks;
+                }
 
-    addMachineBtn.addEventListener('click', function() {
-      machines.push({ name: 'نوی ماشین', status: 'فعال', hours: '۰', fuel: '۰L', area: '--' });
-      renderMachines();
-    });
+                const employeeChunks = chunkArray(data.employees, ROWS_PER_PAGE);
 
-    addProductionBtn.addEventListener('click', function() {
-      production.push({ stage: 'نوې مرحله', tons: '۰', measure: 'ټن', note: '' });
-      renderProduction();
-    });
+                // PAGE 1: Header + Info + First Employee Chunk
+                let page1 = `
+                    <div class="pdf-page">
+                        <div class="pdf-header">
+                            <h2>د کمال افغان شرکت - روزمره راپور</h2>
+                            <p>${data.site} | ${data.reportId} | ${dateFormatted}</p>
+                        </div>
+                        <div class="pdf-section">
+                            <h4>د راپور معلومات</h4>
+                            <div class="pdf-row"><span class="label">راپور شمیره:</span> <span>${data.reportId}</span></div>
+                            <div class="pdf-row"><span class="label">نېټه:</span> <span>${dateFormatted}</span></div>
+                            <div class="pdf-row"><span class="label">ځای:</span> <span>${data.site}</span></div>
+                            <div class="pdf-row"><span class="label">راپور ورکوونکی:</span> <span>${data.reporter}</span></div>
+                            <div class="pdf-row"><span class="label">دنده:</span> <span>${data.role}</span></div>
+                            <div class="pdf-row"><span class="label">د کار وخت:</span> <span>شروع ${data.times.start} | وقفه ${data.times.break} | شروع ${data.times.resume} | ختم ${data.times.end}</span></div>
+                        </div>
+                        <div class="pdf-section">
+                            <h4>عمومی معلومات - کارکوونکي (${data.employees.length})</h4>
+                            <table class="pdf-table">
+                                <thead><tr><th>#</th><th>نوم</th><th>دنده</th><th>حاضر</th><th>غیر حاضر</th><th>علت</th><th>ملاحظات</th></tr></thead>
+                                <tbody>`;
 
-    // ===== UPDATE SUMMARY =====
-    function updateSummary() {
-      const present = employees.filter(e => e.present).length;
-      const absent = employees.filter(e => e.absent).length;
-      presentCount.textContent = present;
-      absentCount.textContent = absent;
-      displayTotalEmployees.textContent = employees.length;
+                let globalIndex = 0;
+                if (employeeChunks.length > 0) {
+                    employeeChunks[0].forEach((e) => {
+                        globalIndex++;
+                        const present = e.present ? '✓' : '';
+                        const absent = e.absent ? '✓' : '';
+                        page1 +=
+                            `<tr><td>${globalIndex}</td><td>${e.name || ''}</td><td>${e.role || ''}</td><td>${present}</td><td>${absent}</td><td>${e.reason || ''}</td><td>${e.note || ''}</td></tr>`;
+                    });
+                }
+                page1 += `</tbody></table></div></div>`;
+                pages.push(page1);
 
-      let totalH = 0;
-      machines.forEach(m => {
-        const val = parseFloat(m.hours);
-        if (!isNaN(val)) totalH += val;
-      });
-      totalHours.textContent = totalH.toFixed(1);
+                // Additional Employee Pages (NO HEADER)
+                for (let p = 1; p < employeeChunks.length; p++) {
+                    let page =
+                        `<div class="pdf-page"><div class="pdf-section"><h4>عمومی معلومات - کارکوونکي (ادامه)</h4><table class="pdf-table"><thead><tr><th>#</th><th>نوم</th><th>دنده</th><th>حاضر</th><th>غیر حاضر</th><th>علت</th><th>ملاحظات</th></tr></thead><tbody>`;
+                    employeeChunks[p].forEach((e) => {
+                        globalIndex++;
+                        const present = e.present ? '✓' : '';
+                        const absent = e.absent ? '✓' : '';
+                        page +=
+                            `<tr><td>${globalIndex}</td><td>${e.name || ''}</td><td>${e.role || ''}</td><td>${present}</td><td>${absent}</td><td>${e.reason || ''}</td><td>${e.note || ''}</td></tr>`;
+                    });
+                    page += `</tbody></table></div></div>`;
+                    pages.push(page);
+                }
 
-      let totalT = 0;
-      production.forEach(p => {
-        const val = parseFloat(p.tons);
-        if (!isNaN(val)) totalT += val;
-      });
-      totalProduction.textContent = totalT;
+                // Machines Section
+                let machinePage =
+                    `<div class="pdf-page"><div class="pdf-section"><h4>د ماشینرۍ او وسایلو وضعیت (${data.machines.length})</h4><table class="pdf-table"><thead><tr><th>#</th><th>ماشین</th><th>وضعیت</th><th>ساعته</th><th>تیلو</th><th>ساحه</th></tr></thead><tbody>`;
+                data.machines.forEach((m, i) => {
+                    machinePage +=
+                        `<tr><td>${i+1}</td><td>${m.name}</td><td>${m.status}</td><td>${m.hours || ''}</td><td>${m.fuel || ''}</td><td>${m.area || ''}</td></tr>`;
+                });
+                machinePage += `</tbody></table></div></div>`;
+                pages.push(machinePage);
 
-      totalMachines.textContent = machines.length;
+                // Production Section
+                let prodPage =
+                    `<div class="pdf-page"><div class="pdf-section"><h4>د تولید / استخراج راپور (${data.production.length})</h4><table class="pdf-table"><thead><tr><th>#</th><th>مرحله</th><th>ټن</th><th>اندازه</th><th>یادشتونه</th></tr></thead><tbody>`;
+                data.production.forEach((p, i) => {
+                    prodPage +=
+                        `<tr><td>${i+1}</td><td>${p.stage}</td><td>${p.tons || ''}</td><td>${p.measure || ''}</td><td>${p.note || ''}</td></tr>`;
+                });
+                prodPage += `</tbody></table></div></div>`;
+                pages.push(prodPage);
 
-      signatureName.textContent = reporterName.value || 'راپور ورکوونکی';
-    }
+                // Summary & Footer
+                let summaryPage =
+                    `<div class="pdf-page"><div class="pdf-section"><h4>لنډیز</h4><div class="pdf-summary"><span>حاضر: ${data.totals.present} | غیر حاضر: ${data.totals.absent}</span><span>ټول کاری ساعته: ${data.totals.hours}</span><span>ټول استخراج: ${data.totals.production} ټن</span><span>ماشینونه: ${data.totals.machines}</span></div></div>`;
 
-    // ===== DATE / REPORT ID =====
-    function setDateAndId() {
-      const now = new Date();
-      const dateStr = now.toISOString().slice(0, 10);
-      reportDate.value = dateStr;
-      displayDate.textContent = formatDate(dateStr);
-      const rid = generateReportId();
-      reportIdInput.value = rid;
-      displayReportId.textContent = rid;
-    }
+                if (data.summary.work) {
+                    summaryPage +=
+                        `<div class="pdf-section"><h4>نن ورځ تر سره شوي کارونه</h4><p style="font-size:10px;padding:0 3px;">${data.summary.work}</p></div>`;
+                }
+                if (data.summary.challenges) {
+                    summaryPage +=
+                        `<div class="pdf-section"><h4>ستونزې او ننګونې</h4><p style="font-size:10px;padding:0 3px;">${data.summary.challenges}</p></div>`;
+                }
+                if (data.summary.suggestions) {
+                    summaryPage +=
+                        `<div class="pdf-section"><h4>وړاندیز او حل لارې</h4><p style="font-size:10px;padding:0 3px;">${data.summary.suggestions}</p></div>`;
+                }
 
-    // ===== BUTTONS =====
-    document.getElementById('printBtn').addEventListener('click', function() {
-      window.print();
-    });
+                summaryPage +=
+                    `<div class="pdf-footer"><span>راپور ورکوونکی لاسلیک: ${data.reporter}</span><span>${dateFormatted}</span></div></div>`;
+                pages.push(summaryPage);
 
-    document.getElementById('submitBtn').addEventListener('click', function() {
-      const data = collectData();
-      const reports = JSON.parse(localStorage.getItem('dailyReports') || '[]');
-      reports.push({ ...data, submittedAt: new Date().toISOString() });
-      localStorage.setItem('dailyReports', JSON.stringify(reports));
-      console.log('📋 راپور ډاټا:', JSON.stringify(data, null, 2));
-      showStatus(`✅ راپور ثبت شو! شمیره: ${data.reportId}`, 'success');
-      alert(`✅ راپور ثبت شو!\n\n📌 راپور شمیره: ${data.reportId}\n👤 راپور ورکوونکی: ${data.reporter}\n📅 تاریخ: ${formatDate(data.date)}\n\n👥 کارکوونکي: ${data.employees.length}\n✅ حاضر: ${data.totals.present}\n❌ غیر حاضر: ${data.totals.absent}\n⛏️ ټول استخراج: ${data.totals.production} ټن\n🔧 ماشینونه: ${data.totals.machines}`);
-    });
+                return pages;
+            }
 
-    reporterName.addEventListener('input', function() {
-      signatureName.textContent = this.value || 'راپور ورکوونکی';
-    });
+            // ===== GENERATE MULTI-PAGE PDF =====
+            async function generateMultiPagePDF(data) {
+                const pages = generatePDFPages(data);
+                pdfContent.innerHTML = pages.join('');
 
-    // ===== INIT =====
-    function init() {
-      setDateAndId();
-      renderEmployees();
-      renderMachines();
-      renderProduction();
-      updateSummary();
-      document.querySelectorAll('.info-grid input').forEach(el => el.addEventListener('input', updateSummary));
-      document.querySelectorAll('textarea').forEach(el => el.addEventListener('input', updateSummary));
-    }
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+                const margin = 8;
 
-    init();
+                const pageElements = pdfContent.querySelectorAll('.pdf-page');
 
-  })();
-</script>
+                for (let p = 0; p < pageElements.length; p++) {
+                    if (p > 0) {
+                        pdf.addPage();
+                    }
+
+                    const tempDiv = document.createElement('div');
+                    tempDiv.style.cssText =
+                        'background:white;padding:0;width:800px;font-family:Arial;direction:rtl;margin:0 auto;';
+                    const clone = pageElements[p].cloneNode(true);
+                    tempDiv.appendChild(clone);
+                    document.body.appendChild(tempDiv);
+
+                    try {
+                        const canvas = await html2canvas(tempDiv, {
+                            scale: 2,
+                            backgroundColor: '#ffffff',
+                            logging: false,
+                            width: 800,
+                            useCORS: true,
+                            height: tempDiv.scrollHeight,
+                        });
+
+                        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                        const imgWidth = pdfWidth - (margin * 2);
+                        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                        const xPos = margin;
+                        const yPos = (pdfHeight - imgHeight) / 2;
+
+                        if (imgHeight > pdfHeight - (margin * 2)) {
+                            const ratio = (pdfHeight - (margin * 2)) / imgHeight;
+                            pdf.addImage(imgData, 'JPEG', margin, margin, imgWidth * ratio, imgHeight * ratio);
+                        } else {
+                            pdf.addImage(imgData, 'JPEG', xPos, yPos > 0 ? yPos : margin, imgWidth, imgHeight);
+                        }
+                    } catch (err) {
+                        console.error('Page render error:', err);
+                    }
+
+                    document.body.removeChild(tempDiv);
+                }
+
+                return pdf.output('blob');
+            }
+
+            // ===== EXPORT EXCEL =====
+            function exportExcel() {
+                const data = collectData();
+                const dateFormatted = formatDate(data.date);
+
+                let html = `
+                <html xmlns:o="urn:schemas-microsoft-com:office:office" 
+                      xmlns:x="urn:schemas-microsoft-com:office:excel" 
+                      xmlns="http://www.w3.org/TR/REC-html40">
+                <head>
+                    <meta charset="UTF-8">
+                    <style>
+                        @page { size: 8.5in 11in; margin: 0.3in; }
+                        table { border-collapse: collapse; font-family: Arial; font-size: 10px; width: 100%; direction: rtl; }
+                        td, th { padding: 3px 5px; border: 1px solid #999; text-align: center; }
+                        .header-title { font-size: 14px; font-weight: bold; text-align: center; background: #0b2b3f; color: white; padding: 5px; }
+                        .header-sub { text-align: center; font-size: 11px; font-weight: bold; background: #e8edf2; padding: 3px; }
+                        .section-title { background: #dce3ec; font-weight: bold; text-align: center; padding: 3px; font-size: 10px; }
+                        .summary { background: #e8f0f8; font-weight: bold; text-align: center; padding: 3px; }
+                        .info-row { background: #f5f7fa; text-align: right; padding: 2px 5px; }
+                        .col-1 { width: 5%; } .col-2 { width: 15%; } .col-3 { width: 15%; }
+                        .col-4 { width: 10%; } .col-5 { width: 10%; } .col-6 { width: 20%; } .col-7 { width: 25%; }
+                        .col-m1 { width: 5%; } .col-m2 { width: 20%; } .col-m3 { width: 15%; }
+                        .col-m4 { width: 15%; } .col-m5 { width: 15%; } .col-m6 { width: 30%; }
+                        .col-p1 { width: 5%; } .col-p2 { width: 20%; } .col-p3 { width: 15%; }
+                        .col-p4 { width: 20%; } .col-p5 { width: 40%; }
+                    </style>
+                </head>
+                <body>
+                    <table>
+                        <tr><td colspan="7" class="header-title">د کمال افغان شرکت - روزمره راپور</td></tr>
+                        <tr><td colspan="7" class="header-sub">${data.site} | ${data.reportId} | ${dateFormatted}</td></tr>
+                        <tr><td colspan="7" style="height:2px;"></td></tr>
+                        <tr><td colspan="7" class="section-title">د راپور معلومات</td></tr>
+                        <tr><td colspan="7" class="info-row"><b>راپور شمیره:</b> ${data.reportId} &nbsp;|&nbsp; <b>نېټه:</b> ${dateFormatted} &nbsp;|&nbsp; <b>ځای:</b> ${data.site}</td></tr>
+                        <tr><td colspan="7" class="info-row"><b>راپور ورکوونکی:</b> ${data.reporter} &nbsp;|&nbsp; <b>دنده:</b> ${data.role} &nbsp;|&nbsp; <b>د کار وخت:</b> ${data.times.start} | ${data.times.break} | ${data.times.resume} | ${data.times.end}</td></tr>
+                        <tr><td colspan="7" style="height:2px;"></td></tr>
+                        <tr><td colspan="7" class="section-title">عمومی معلومات - کارکوونکي (${data.employees.length})</td></tr>
+                        <tr><th class="col-1">#</th><th class="col-2">نوم</th><th class="col-3">دنده</th><th class="col-4">حاضر</th><th class="col-5">غیر حاضر</th><th class="col-6">علت</th><th class="col-7">ملاحظات</th></tr>`;
+
+                data.employees.forEach((e, i) => {
+                    const present = e.present ? '✓' : '';
+                    const absent = e.absent ? '✓' : '';
+                    html +=
+                        `<tr><td>${i+1}</td><td>${e.name || ''}</td><td>${e.role || ''}</td><td>${present}</td><td>${absent}</td><td>${e.reason || ''}</td><td>${e.note || ''}</td></tr>`;
+                });
+
+                html += `
+                        <tr><td colspan="7" style="height:2px;"></td></tr>
+                        <tr><td colspan="7" class="section-title">د ماشینرۍ او وسایلو وضعیت (${data.machines.length})</td></tr>
+                        <tr><th class="col-m1">#</th><th class="col-m2">ماشین</th><th class="col-m3">وضعیت</th><th class="col-m4">ساعته</th><th class="col-m5">تیلو</th><th colspan="2" class="col-m6">ساحه</th></tr>`;
+
+                data.machines.forEach((m, i) => {
+                    html +=
+                        `<tr><td>${i+1}</td><td>${m.name}</td><td>${m.status}</td><td>${m.hours || ''}</td><td>${m.fuel || ''}</td><td colspan="2">${m.area || ''}</td></tr>`;
+                });
+
+                html += `
+                        <tr><td colspan="7" style="height:2px;"></td></tr>
+                        <tr><td colspan="7" class="section-title">د تولید / استخراج راپور (${data.production.length})</td></tr>
+                        <tr><th class="col-p1">#</th><th class="col-p2">مرحله</th><th class="col-p3">ټن</th><th class="col-p4">اندازه</th><th colspan="3" class="col-p5">یادشتونه</th></tr>`;
+
+                data.production.forEach((p, i) => {
+                    html +=
+                        `<tr><td>${i+1}</td><td>${p.stage}</td><td>${p.tons || ''}</td><td>${p.measure || ''}</td><td colspan="3">${p.note || ''}</td></tr>`;
+                });
+
+                html += `
+                        <tr><td colspan="7" style="height:2px;"></td></tr>
+                        <tr><td colspan="7" class="section-title">لنډیز</td></tr>
+                        <tr class="summary"><td colspan="7">حاضر: ${data.totals.present} | غیر حاضر: ${data.totals.absent} | ساعته: ${data.totals.hours} | استخراج: ${data.totals.production} ټن | ماشینونه: ${data.totals.machines}</td></tr>
+                        <tr><td colspan="7" style="height:2px;"></td></tr>`;
+
+                if (data.summary.work) {
+                    html +=
+                        `<tr><td colspan="7" style="text-align:right;background:#f9f9f9;padding:2px 5px;"><b>نن ورځ تر سره شوي کارونه:</b> ${data.summary.work}</td></tr>`;
+                }
+                if (data.summary.challenges) {
+                    html +=
+                        `<tr><td colspan="7" style="text-align:right;background:#f9f9f9;padding:2px 5px;"><b>ستونزې:</b> ${data.summary.challenges}</td></tr>`;
+                }
+                if (data.summary.suggestions) {
+                    html +=
+                        `<tr><td colspan="7" style="text-align:right;background:#f9f9f9;padding:2px 5px;"><b>وړاندیزونه:</b> ${data.summary.suggestions}</td></tr>`;
+                }
+
+                html += `
+                        <tr><td colspan="7" style="height:2px;"></td></tr>
+                        <tr><td colspan="7" style="text-align:right;padding:3px 5px;border-top:2px solid #0b2b3f;">
+                            <b>لاسلیک:</b> ${data.reporter} &nbsp;&nbsp;&nbsp; <b>نېټه:</b> ${dateFormatted}
+                        </td></tr>
+                    </table>
+                </body>
+                </html>`;
+
+                const blob = new Blob([html], { type: 'application/vnd.ms-excel;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `رپور-${data.reportId}.xls`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                setTimeout(() => URL.revokeObjectURL(url), 5000);
+                showStatus('✅ Excel ډاونلوډ شو!', 'success');
+            }
+
+            // ===== WHATSAPP =====
+            async function sendWhatsApp() {
+                const data = collectData();
+                const phone = data.whatsapp || '+93780498288';
+                const cleanPhone = phone.replace(/\s/g, '').replace(/^0/, '+93');
+
+                try {
+                    showStatus('⏳ PDF جوړیږي ...', 'info');
+
+                    const blob = await generateMultiPagePDF(data);
+                    const url = URL.createObjectURL(blob);
+
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `رپور-${data.reportId}.pdf`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+                    const dateFormatted = formatDate(data.date);
+                    let msg = `📋 *د کمال افغان شرکت - روزمره راپور*\n`;
+                    msg += `📌 ${data.reportId}\n📅 ${dateFormatted}\n📍 ${data.site}\n👤 ${data.reporter}\n\n📎 PDF فایل ډاونلوډ شو، مهرباني وکړئ یې د WhatsApp له لارې واستوئ.`;
+
+                    const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
+                    window.open(waUrl, '_blank');
+
+                    showStatus('✅ PDF ډاونلوډ شو! WhatsApp پرانیستل شو.', 'success');
+                } catch (err) {
+                    showStatus('❌ خطا: ' + err.message, 'error');
+                    console.error(err);
+                }
+            }
+
+            // ===== PRINT =====
+            function printReport() {
+                window.print();
+            }
+
+            // ===== SAVE REPORT =====
+            function saveReport() {
+                const data = collectData();
+                let reports = JSON.parse(localStorage.getItem('dailyReports') || '[]');
+                const existingIndex = reports.findIndex(r => r.reportId === data.reportId);
+                if (existingIndex !== -1) {
+                    reports[existingIndex] = data;
+                    showStatus(`✅ راپور ${data.reportId} تازه شو!`, 'success');
+                } else {
+                    reports.push(data);
+                    showStatus(`✅ راپور ${data.reportId} خوندي شو!`, 'success');
+                }
+                localStorage.setItem('dailyReports', JSON.stringify(reports));
+                autoSaveStatus.textContent = 'خوندي شو ✓';
+                autoSaveStatus.style.color = '#1a7a3a';
+                console.log('📋 خوندي شوی راپور:', JSON.stringify(data, null, 2));
+            }
+
+            // ===== CLEAR FORM =====
+            function clearForm() {
+                if (!confirm('آیا تاسو غواړئ ټول فورم پاک کړئ؟')) return;
+                reportIdInput.value = '';
+                displayReportId.textContent = '';
+                const now = new Date();
+                const dateStr = now.toISOString().slice(0, 10);
+                reportDate.value = dateStr;
+                displayDate.textContent = formatDate(dateStr);
+                document.getElementById('workSummary').value = '';
+                document.getElementById('challenges').value = '';
+                document.getElementById('suggestions').value = '';
+                document.getElementById('reporterRole').value = 'د ساحې انجنیر';
+                document.getElementById('startTime').value = '07:30';
+                document.getElementById('breakTime').value = '12:00';
+                document.getElementById('resumeTime').value = '13:00';
+                document.getElementById('endTime').value = '16:30';
+                whatsappNumber.value = '+93780498288';
+                reporterName.value = 'انجنیر احمد';
+                siteName.value = 'دوسرکي دفتر';
+                employees = JSON.parse(JSON.stringify(defaultEmployees));
+                machines = JSON.parse(JSON.stringify(defaultMachines));
+                production = JSON.parse(JSON.stringify(defaultProduction));
+                renderEmployees();
+                renderMachines();
+                renderProduction();
+                updateSummary();
+                signatureName.textContent = 'انجنیر احمد';
+                localStorage.removeItem('dailyReportDraft');
+                autoSaveStatus.textContent = 'پاک شو';
+                autoSaveStatus.style.color = '#b91c1c';
+                showStatus('🧹 فورم پاک شو!', 'info');
+            }
+
+            // ===== RENDER FUNCTIONS =====
+
+            function renderEmployees() {
+                employeeBody.innerHTML = '';
+                employees.forEach((emp, i) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                            <td><input type="text" class="emp-name" value="${emp.name}" data-i="${i}" placeholder="نوم" /></td>
+                            <td><input type="text" class="emp-role" value="${emp.role}" data-i="${i}" placeholder="دنده" /></td>
+                            <td style="text-align:center;"><input type="checkbox" class="emp-present" ${emp.present ? 'checked' : ''} data-i="${i}" /></td>
+                            <td style="text-align:center;"><input type="checkbox" class="emp-absent" ${emp.absent ? 'checked' : ''} data-i="${i}" /></td>
+                            <td><input type="text" class="emp-reason" value="${emp.reason}" placeholder="علت" data-i="${i}" /></td>
+                            <td><input type="text" class="emp-note" value="${emp.note}" placeholder="ملاحظات" data-i="${i}" /></td>
+                            <td><button type="button" class="btn-remove-row no-print" data-i="${i}"><i class="fas fa-times"></i></button></td>
+                        `;
+                    employeeBody.appendChild(tr);
+                });
+                document.querySelectorAll('.emp-present, .emp-absent').forEach(el => el.addEventListener('change',
+                    updateEmployee));
+                document.querySelectorAll('.emp-name, .emp-role, .emp-reason, .emp-note').forEach(el => {
+                    el.addEventListener('input', function(e) {
+                        updateEmployee(e);
+                        triggerAutoSave();
+                    });
+                });
+                document.querySelectorAll('#employeeBody .btn-remove-row').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const idx = parseInt(this.dataset.i);
+                        if (employees.length > 1) {
+                            employees.splice(idx, 1);
+                            renderEmployees();
+                            updateSummary();
+                            triggerAutoSave();
+                        } else {
+                            showStatus('لږ تر لږه یو کارکوونکی باید وي.', 'error');
+                        }
+                    });
+                });
+                updateSummary();
+            }
+
+            function updateEmployee(e) {
+                const idx = parseInt(e.target.dataset.i);
+                const row = employeeBody.children[idx];
+                if (!row) return;
+                employees[idx].name = row.querySelector('.emp-name').value;
+                employees[idx].role = row.querySelector('.emp-role').value;
+                employees[idx].present = row.querySelector('.emp-present').checked;
+                employees[idx].absent = row.querySelector('.emp-absent').checked;
+                employees[idx].reason = row.querySelector('.emp-reason').value;
+                employees[idx].note = row.querySelector('.emp-note').value;
+                updateSummary();
+            }
+
+            function renderMachines() {
+                machineContainer.innerHTML = '';
+                const header = document.createElement('div');
+                header.className = 'machine-row';
+                header.style.fontWeight = '600';
+                header.style.color = '#1f3a4b';
+                header.style.fontSize = '0.7rem';
+                header.innerHTML =
+                    `<span>ماشین</span><span>وضعیت</span><span>ساعته</span><span>تیلو</span><span>ساحه</span><span></span>`;
+                machineContainer.appendChild(header);
+                machines.forEach((m, i) => {
+                    const row = document.createElement('div');
+                    row.className = 'machine-row';
+                    row.innerHTML = `
+                            <input type="text" class="mach-name" value="${m.name}" data-i="${i}" placeholder="نوم" />
+                            <select class="mach-status" data-i="${i}">
+                                <option value="فعال" ${m.status === 'فعال' ? 'selected' : ''}>فعال</option>
+                                <option value="غیرفعال" ${m.status === 'غیرفعال' ? 'selected' : ''}>غیرفعال</option>
+                            </select>
+                            <input type="text" class="mach-hours" value="${m.hours}" data-i="${i}" placeholder="ساعته" />
+                            <input type="text" class="mach-fuel" value="${m.fuel}" data-i="${i}" placeholder="تیلو" />
+                            <input type="text" class="mach-area" value="${m.area}" data-i="${i}" placeholder="ساحه" />
+                            <button type="button" class="btn-remove-row no-print" data-i="${i}"><i class="fas fa-times"></i></button>
+                        `;
+                    machineContainer.appendChild(row);
+                });
+                document.querySelectorAll(
+                        '#machineContainer .mach-name, #machineContainer .mach-status, #machineContainer .mach-hours, #machineContainer .mach-fuel, #machineContainer .mach-area'
+                    )
+                    .forEach(el => el.addEventListener('input', function(e) {
+                        updateMachine(e);
+                        triggerAutoSave();
+                    }));
+                document.querySelectorAll('#machineContainer .btn-remove-row').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const idx = parseInt(this.dataset.i);
+                        if (machines.length > 1) {
+                            machines.splice(idx, 1);
+                            renderMachines();
+                            updateSummary();
+                            triggerAutoSave();
+                        } else {
+                            showStatus('لږ تر لږه یو ماشین باید وي.', 'error');
+                        }
+                    });
+                });
+                updateSummary();
+            }
+
+            function updateMachine(e) {
+                const idx = parseInt(e.target.dataset.i);
+                const rows = machineContainer.querySelectorAll('.machine-row');
+                const row = rows[idx + 1];
+                if (!row) return;
+                machines[idx].name = row.querySelector('.mach-name').value;
+                machines[idx].status = row.querySelector('.mach-status').value;
+                machines[idx].hours = row.querySelector('.mach-hours').value;
+                machines[idx].fuel = row.querySelector('.mach-fuel').value;
+                machines[idx].area = row.querySelector('.mach-area').value;
+                updateSummary();
+            }
+
+            function renderProduction() {
+                productionContainer.innerHTML = '';
+                const header = document.createElement('div');
+                header.className = 'prod-row';
+                header.style.fontWeight = '600';
+                header.style.color = '#1f3a4b';
+                header.style.fontSize = '0.7rem';
+                header.innerHTML = `<span>مرحله</span><span>ټن</span><span>اندازه</span><span>یادشتونه</span><span></span>`;
+                productionContainer.appendChild(header);
+                production.forEach((p, i) => {
+                    const row = document.createElement('div');
+                    row.className = 'prod-row';
+                    row.innerHTML = `
+                            <input type="text" class="prod-stage" value="${p.stage}" data-i="${i}" placeholder="مرحله" />
+                            <input type="text" class="prod-tons" value="${p.tons}" data-i="${i}" placeholder="ټن" />
+                            <input type="text" class="prod-measure" value="${p.measure}" data-i="${i}" placeholder="اندازه" />
+                            <input type="text" class="prod-note" value="${p.note}" data-i="${i}" placeholder="یادشتونه" />
+                            <button type="button" class="btn-remove-row no-print" data-i="${i}"><i class="fas fa-times"></i></button>
+                        `;
+                    productionContainer.appendChild(row);
+                });
+                document.querySelectorAll(
+                        '#productionContainer .prod-stage, #productionContainer .prod-tons, #productionContainer .prod-measure, #productionContainer .prod-note'
+                    )
+                    .forEach(el => el.addEventListener('input', function(e) {
+                        updateProduction(e);
+                        triggerAutoSave();
+                    }));
+                document.querySelectorAll('#productionContainer .btn-remove-row').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const idx = parseInt(this.dataset.i);
+                        if (production.length > 1) {
+                            production.splice(idx, 1);
+                            renderProduction();
+                            updateSummary();
+                            triggerAutoSave();
+                        } else {
+                            showStatus('لږ تر لږه یو تولید باید وي.', 'error');
+                        }
+                    });
+                });
+                updateSummary();
+            }
+
+            function updateProduction(e) {
+                const idx = parseInt(e.target.dataset.i);
+                const rows = productionContainer.querySelectorAll('.prod-row');
+                const row = rows[idx + 1];
+                if (!row) return;
+                production[idx].stage = row.querySelector('.prod-stage').value;
+                production[idx].tons = row.querySelector('.prod-tons').value;
+                production[idx].measure = row.querySelector('.prod-measure').value;
+                production[idx].note = row.querySelector('.prod-note').value;
+                updateSummary();
+            }
+
+            // ===== ADD BUTTONS =====
+            addEmployeeBtn.addEventListener('click', function() {
+                employees.push({ name: '', role: '', present: true, absent: false, reason: '', note: '' });
+                renderEmployees();
+                triggerAutoSave();
+            });
+            addMachineBtn.addEventListener('click', function() {
+                machines.push({ name: 'نوی ماشین', status: 'فعال', hours: '', fuel: '', area: '' });
+                renderMachines();
+                triggerAutoSave();
+            });
+            addProductionBtn.addEventListener('click', function() {
+                production.push({ stage: 'نوې مرحله', tons: '', measure: '', note: '' });
+                renderProduction();
+                triggerAutoSave();
+            });
+
+            // ===== UPDATE SUMMARY =====
+            function updateSummary() {
+                const present = employees.filter(e => e.present).length;
+                const absent = employees.filter(e => e.absent).length;
+                presentCount.textContent = present;
+                absentCount.textContent = absent;
+                displayTotalEmployees.textContent = employees.length;
+                let totalH = 0;
+                machines.forEach(m => {
+                    const val = parseFloat(m.hours);
+                    if (!isNaN(val)) totalH += val;
+                });
+                totalHours.textContent = totalH.toFixed(1);
+                let totalT = 0;
+                production.forEach(p => {
+                    const val = parseFloat(p.tons);
+                    if (!isNaN(val)) totalT += val;
+                });
+                totalProduction.textContent = totalT;
+                totalMachines.textContent = machines.length;
+                signatureName.textContent = reporterName.value || 'راپور ورکوونکی';
+            }
+
+            // ===== DATE / REPORT ID =====
+            function setDateAndId() {
+                const now = new Date();
+                const dateStr = now.toISOString().slice(0, 10);
+                reportDate.value = dateStr;
+                displayDate.textContent = formatDate(dateStr);
+                // د راپور شمیره د کاروونکي له خوا داخلول کیږي
+                // reportIdInput.value به د کاروونکي داخلول شوي ارزښت وښيي
+                displayReportId.textContent = reportIdInput.value || '---';
+            }
+
+            // Update displayReportId when user types
+            reportIdInput.addEventListener('input', function() {
+                displayReportId.textContent = this.value || '---';
+            });
+
+            // ===== LOAD DRAFT =====
+            function loadDraft() {
+                const draft = localStorage.getItem('dailyReportDraft');
+                if (draft) {
+                    try {
+                        const data = JSON.parse(draft);
+                        loadData(data);
+                        autoSaveStatus.textContent = 'مسوده (ډرافټ)';
+                        autoSaveStatus.style.color = '#b91c1c';
+                        showStatus('📝 مسوده بار شوه!', 'info');
+                    } catch (e) {
+                        console.log('Draft load error:', e);
+                    }
+                }
+            }
+
+            // ===== BUTTONS =====
+            document.getElementById('printBtn').addEventListener('click', printReport);
+            document.getElementById('excelBtn').addEventListener('click', exportExcel);
+            document.getElementById('whatsappBtn').addEventListener('click', sendWhatsApp);
+            document.getElementById('saveBtn').addEventListener('click', saveReport);
+            document.getElementById('clearBtn').addEventListener('click', clearForm);
+
+            reporterName.addEventListener('input', function() {
+                signatureName.textContent = this.value || 'راپور ورکوونکی';
+                triggerAutoSave();
+            });
+            document.querySelectorAll('.info-grid input, .info-grid select, textarea').forEach(el => {
+                el.addEventListener('input', triggerAutoSave);
+                el.addEventListener('change', triggerAutoSave);
+            });
+
+            // ===== INIT =====
+            function init() {
+                setDateAndId();
+                renderEmployees();
+                renderMachines();
+                renderProduction();
+                updateSummary();
+                loadDraft();
+                setInterval(autoSave, 30000);
+            }
+            init();
+
+        })();
+    </script>
 </body>
 </html>
